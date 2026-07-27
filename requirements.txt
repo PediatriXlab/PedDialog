@@ -1,0 +1,13 @@
+# PedDialog-CoT code dependencies
+# Core
+python-dotenv>=0.9.0
+openai>=2.0.0
+
+# Data processing
+pandas>=2.0.0
+datasets>=3.0.0
+
+# Model fine-tuning (validation experiment only)
+torch>=2.0.0
+transformers>=4.30.0
+peft>=0.10.0
