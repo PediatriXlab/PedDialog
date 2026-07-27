@@ -1,6 +1,6 @@
 # PedDialog-CoT Code
 
-Code supporting the PedDialog-CoT dataset, as described in the paper *"PedDialog-CoT, a Pediatric Consultation Dialogue Dataset with Clinician-Validated Reasoning Annotations"* (Scientific Data).
+Code supporting the PedDialog-CoT dataset, as described in the paper *"A Pediatric Consultation Dialogue Dataset with Pediatrician-Validated Reasoning Annotations"*.
 
 ## Directory Structure
 
@@ -18,8 +18,8 @@ code/
 ├── translation/           # Dialogue and CoT translation (ZH→EN)
 │   └── translate.py
 ├── validation/            # Downstream experiments and evaluation templates
-│   ├── cot_ablation.py          # LoRA fine-tuning ablation: 3 conditions (Table 4)
-│   ├── eval_with_reasoning.py   # Supplementary oracle eval (gold reasoning in context)
+│   ├── cot_ablation.py          # LoRA fine-tuning: base + dialogue_only (Table 4, rows 1–2)
+│   ├── eval_with_reasoning.py   # Table 4, row 3: dialogue_only model + reasoning input
 │   ├── collect_results.py       # Aggregate results into summary JSON + CSV
 │   └── eval_templates.py        # B2/B3 evaluation template generation
 ├── utils/
@@ -83,17 +83,17 @@ python deidentification/pii_scan.py --input cleaned.jsonl --output pii_results.j
 ### 5. Validation
 
 ```bash
-# Conditions 1-3: base / dialogue_only / dialogue_cot (Table 4, requires GPU for 2-3)
+# Table 4, row 1: evaluate base model on reply-token PPL
 python validation/cot_ablation.py --condition base \
     --data_dir ../data/release --output_dir results/ablation
+
+# Table 4, row 2: LoRA fine-tune on dialogue replies (requires GPU)
 python validation/cot_ablation.py --condition dialogue_only \
     --data_dir ../data/release --output_dir results/ablation
-python validation/cot_ablation.py --condition dialogue_cot \
-    --data_dir ../data/release --output_dir results/ablation
 
-# Supplementary oracle eval (gold reasoning in context)
+# Table 4, row 3: same dialogue_only model + reasoning as input at eval
 python validation/eval_with_reasoning.py \
-    --adapter results/ablation/dialogue_cot/final_model \
+    --adapter results/ablation/dialogue_only/final_model \
     --data_dir ../data/release
 
 # Collect all results into summary JSON + CSV
